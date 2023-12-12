@@ -14,7 +14,7 @@ with open(r'./input.txt', mode='r', encoding='utf-8') as inputfile:
 	maps = regex.search(inputfile.read())
 	maps = {
 		'seeds' : [int(x) for x in maps.group('seeds').strip().split()],
-		'seeds_p2': [(x, x+y-1) for x, y in [list(map(int, x.split())) for x in re.findall(r"\d+ \d+", maps.group('seeds').strip())]], # For part 2
+		'seeds_p2': [(x, x+y) for x, y in [list(map(int, x.split())) for x in re.findall(r"\d+ \d+", maps.group('seeds').strip())]], # For part 2
 		'seed-to-soil' : [ list(map(int, x.split())) for x in maps.group('seed_to_soil').strip().split('\n') ],
 		'soil-to-fertilizer' : [ list(map(int, x.split())) for x in maps.group('soil_to_fertilizer').strip().split('\n') ],
 		'fertilizer-to-water' : [ list(map(int, x.split())) for x in maps.group('fertilizer_to_water').strip().split('\n') ],
