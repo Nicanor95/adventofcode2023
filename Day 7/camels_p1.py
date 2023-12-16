@@ -38,6 +38,4 @@ with open(r'./input.txt', mode = 'r', encoding = 'utf-8') as inputfile:
 	for i, hand in enumerate(sorted_hands, start=1):
 		answer += int(hand[1]) * i
 	
-	for hand in sorted_hands:
-		print(hand)
 	print("Answer 1: {}".format(answer))
