@@ -2,8 +2,9 @@
 
 import re
 
-START = 'AAA'
-DESTINATION = 'ZZZ'
+START = "AAA"
+DESTINATION = "ZZZ"
+
 
 def moveToTop(l: list, item: str) -> list:
     for i, location in enumerate(l):
@@ -12,8 +13,9 @@ def moveToTop(l: list, item: str) -> list:
             break
     return l
 
-with open(r'./input.txt', mode='r', encoding='utf-8') as inputfile:
-    regex = re.compile(r'^(?P<location>\w+)(?: = \()(?P<left>\w+)(?:. )(?P<right>\w+)')
+
+with open(r"./input.txt", mode="r", encoding="utf-8") as inputfile:
+    regex = re.compile(r"^(?P<location>\w+)(?: = \()(?P<left>\w+)(?:. )(?P<right>\w+)")
     lines = inputfile.read().splitlines()
     directions = lines[0].strip()
 
@@ -21,10 +23,12 @@ with open(r'./input.txt', mode='r', encoding='utf-8') as inputfile:
     for line in lines[2:]:
         match = regex.match(line)
         if match:
-            locations.append((match.group('location'), (match.group('left'), match.group('right'))))
+            locations.append(
+                (match.group("location"), (match.group("left"), match.group("right")))
+            )
 
     # We set the START at the beginning
-    locations =  moveToTop(locations, START)
+    locations = moveToTop(locations, START)
 
     found = False
     steps = -1
@@ -33,9 +37,9 @@ with open(r'./input.txt', mode='r', encoding='utf-8') as inputfile:
             steps += 1
             if locations[0][0] != DESTINATION:
                 print(locations[0], direction)
-                if direction == 'R':
+                if direction == "R":
                     locations = moveToTop(locations, locations[0][1][1])
-                if direction == 'L':
+                if direction == "L":
                     locations = moveToTop(locations, locations[0][1][0])
             else:
                 found = True
