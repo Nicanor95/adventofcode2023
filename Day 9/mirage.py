@@ -23,5 +23,10 @@ def predict(line: str) -> int:
 
 if __name__ == '__main__':
 	with open(r"./input.txt", mode="r", encoding="utf-8") as inputfile:
-		nextvalues = [predict(line) for line in inputfile.read().splitlines()]
-		print("Answer 1: {}".format(sum(nextvalues)))
+		input = inputfile.read().splitlines()
+		nextvalues = [predict(line) for line in input]
+
+		nextvalues_p2 = [" ".join(reversed(line.split())) for line in input]
+		nextvalues_p2 = [predict(line) for line in nextvalues_p2]
+
+		print("Answer 1: {}\nAnswer 2: {}".format(sum(nextvalues), sum(nextvalues_p2)))
