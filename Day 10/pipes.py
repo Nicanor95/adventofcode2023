@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+def replaceAtIndex(string: str, replacement: str, index: int) -> str:
+	return string[:index] + replacement + string[index + 1:]
+
 def findSnake(grid: list) -> tuple[int, int]:
 	for i, line in enumerate(grid):
 		if "S" in line:
@@ -66,6 +69,7 @@ def nextPipes(pos: tuple, grid: list) -> list[tuple[int, int]]:
 	return ret
 
 def followPipe(snakePos: tuple, grid: list) -> int:
+	pipes = {"L": "╚", "|": "║", "J": "╝", "F": "╔", "7": "╗", "-": "═"}
 	x, y = snakePos
 	x1, y1 = snakePos
 	prev1 = (x1, y1)
@@ -85,17 +89,19 @@ def followPipe(snakePos: tuple, grid: list) -> int:
 			for nextpipe in next1:
 				if nextpipe != (x1, y1) and nextpipe != prev1:
 					prev1 = (x1, y1)
+					grid[x1] = replaceAtIndex(grid[x1], pipes[grid[x1][y1]], y1)
 					x1, y1 = nextpipe
 					break
 			for nextpipe in next2:
 				if nextpipe != (x2, y2) and nextpipe != prev2:
 					prev2 = (x2, y2)
+					grid[x2] = replaceAtIndex(grid[x2], pipes[grid[x2][y2]], y2)
 					x2, y2 = nextpipe
 					break
 		if (x1, y1) == (x2, y2):
 			count += 1
+			grid[x2] = replaceAtIndex(grid[x2], pipes[grid[x2][y2]], y2)
 			break
-		
 	return count
 
 
@@ -103,4 +109,8 @@ if __name__ == '__main__':
 	with open(r"./input.txt", mode="r", encoding="utf-8") as inputfile:
 		grid = inputfile.read().splitlines()
 		snake = findSnake(grid)
-		print("Answer 1:", followPipe(snake,grid))
+		count = followPipe(snake,grid)
+		print("Pipes: ")
+		for line in grid:
+			print(line)
+		print("Answer 1: {}".format(count))
