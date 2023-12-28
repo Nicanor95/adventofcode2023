@@ -14,16 +14,16 @@ def revealPipe(snakePos: tuple, grid: list) -> str:
 	north, east, south, west = (False, False, False, False)
 	
 	# Check north
-	if grid[x - 1][y] in ("|", "7", "F"):
+	if grid[x - 1][y] in ("|", "7", "F", "║", "╗", "╔"):
 		north = True
 	# Check east
-	if grid[x][y + 1] in ("-", "J", "7"):
+	if grid[x][y + 1] in ("-", "J", "7", "═", "╝", "╗"):
 		east = True
 	# Check south
-	if grid[x + 1][y] in ("|", "L", "J"):
+	if grid[x + 1][y] in ("|", "L", "J", "║", "╚", "╝"):
 		south = True
 	# Check west
-	if grid[x][y - 1] in ("-", "L", "F"):
+	if grid[x][y - 1] in ("-", "L", "F", "═", "╚", "╔"):
 		west = True
 	
 	connections = (north, east, south, west)
@@ -48,22 +48,22 @@ def nextPipes(pos: tuple, grid: list) -> list[tuple[int, int]]:
 	x, y = pos
 	ret = []
 	match grid[x][y] if grid[x][y] != "S" else revealPipe(pos, grid):
-		case "L":
+		case "L" | "╚":
 			ret.append((x - 1, y))
 			ret.append((x, y + 1))
-		case "|":
+		case "|" | "║":
 			ret.append((x - 1, y))
 			ret.append((x + 1, y))
-		case "J":
+		case "J" | "╝":
 			ret.append((x - 1, y))
 			ret.append((x, y - 1))
-		case "F":
+		case "F" | "╔":
 			ret.append((x, y + 1))
 			ret.append((x + 1, y))
-		case "7":
+		case "7" | "╗":
 			ret.append((x, y - 1))
 			ret.append((x + 1, y))
-		case "-":
+		case "-" | "═":
 			ret.append((x, y - 1))
 			ret.append((x, y + 1))
 	return ret
@@ -105,6 +105,45 @@ def followPipe(snakePos: tuple, grid: list) -> int:
 	return count
 
 
+def checkInside(y: int, line: str) -> bool:
+	count = 0
+	waiting = []
+
+	for c in line[y+1:]:
+		if c in ["╚", "║", "╝", "╔", "╗"]:
+			count += 1
+			if c == "╚":
+				waiting.append("╗")
+			if c == "╔":
+				waiting.append("╝")
+			if c in waiting:
+				count -= 1
+				waiting.remove(c)
+			if c == "╗":
+				try:
+					waiting.remove("╝")
+				except ValueError:
+					pass
+			if c == "╝":
+				try:
+					waiting.remove("╗")
+				except ValueError:
+					pass
+				
+	return count % 2 != 0
+
+def insideCount(snake: tuple, grid: list) -> int:
+	pipes = {"L": "╚", "|": "║", "J": "╝", "F": "╔", "7": "╗", "-": "═"}
+	count = 0
+	grid[snake[0]] = replaceAtIndex(grid[snake[0]], pipes[revealPipe(snake, grid)], snake[1])
+	for line in grid:
+		for i, c in enumerate(line):
+			if c not in ["╚", "║", "╝", "╔", "╗", "═"]:
+				if checkInside(i, line):
+					count += 1
+	return count
+
+
 if __name__ == '__main__':
 	with open(r"./input.txt", mode="r", encoding="utf-8") as inputfile:
 		grid = inputfile.read().splitlines()
@@ -113,4 +152,5 @@ if __name__ == '__main__':
 		print("Pipes: ")
 		for line in grid:
 			print(line)
-		print("Answer 1: {}".format(count))
+		answer2 = insideCount(snake, grid)
+		print("Answer 1: {}\nAnswer 2: {}".format(count, answer2))
