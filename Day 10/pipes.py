@@ -106,6 +106,9 @@ def followPipe(snakePos: tuple, grid: list) -> int:
 
 
 def checkInside(y: int, line: str) -> bool:
+	"""
+	Based on the raycasting algo: https://rosettacode.org/wiki/Ray-casting_algorithm
+	"""
 	count = 0
 	waiting = []
 
